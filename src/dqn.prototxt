@@ -1,0 +1,186 @@
+layer {
+	name: "InputDataLayer"
+	type: "MemoryData"
+	top: "data"
+	top: "dummy1"
+	memory_data_param {
+		batch_size: 32
+		channels: 4
+		height: 84
+		width: 84
+	}
+}
+
+layer {
+	name: "L1"
+	type: "Convolution"
+	bottom: "data"
+	top: "L1"
+	convolution_param {
+		num_output: 32
+		kernel_size: 8
+		stride: 4
+		weight_filler {
+			type: "gaussian"
+			std: 0.01
+		}
+	}
+}
+
+layer {
+	name: "L1R"
+	type: "ReLU"
+	bottom: "L1"
+	top: "L1"
+	relu_param {
+    	negative_slope: 0.01
+  	}
+}
+
+layer {
+	name: "L2"
+	type: "Convolution"
+	bottom: "L1"
+	top: "L2"
+	convolution_param {
+		num_output: 64
+		kernel_size: 4
+		stride: 2
+		weight_filler {
+			type: "gaussian"
+			std: 0.01
+		}
+	}
+}
+
+layer {
+	name: "L2R"
+	type: "ReLU"
+	bottom: "L2"
+	top: "L2"
+	relu_param {
+    	negative_slope: 0.01
+  	}
+}
+
+layer {
+	name: "L3"
+	type: "Convolution"
+	bottom: "L2"
+	top: "L3"
+	convolution_param {
+		num_output: 64
+		kernel_size: 3
+		stride: 1
+		weight_filler {
+			type: "gaussian"
+			std: 0.02
+		}
+	}
+}
+
+layer {
+	name: "L3R"
+	type: "ReLU"
+	bottom: "L3"
+	top: "L3"
+	relu_param {
+    	negative_slope: 0.01
+  	}
+}
+
+layer {
+	name: "IP4"
+	type: "InnerProduct"
+	bottom: "L3"
+	top: "I4"
+	inner_product_param {
+		num_output: 256
+		weight_filler {
+			type: "gaussian"
+			std: 0.02
+		}
+	}
+}
+
+layer {
+	name: "IP4R"
+	type: "ReLU"
+	bottom: "I4"
+	top: "I4R"
+	relu_param {
+    	negative_slope: 0.01
+  	}
+}
+
+layer {
+	name: "IP5"
+	type: "InnerProduct"
+	bottom: "I4R"
+	top: "output"
+	inner_product_param {
+		num_output: 18
+		weight_filler {
+			type: "gaussian"
+			std: 0.02
+		}
+	}
+}
+
+layer {
+	name: "SelectorInput"
+	type: "MemoryData"
+	top: "SelectorRaw"
+	top: "dummy2"
+	memory_data_param {
+		batch_size: 32
+		channels: 18
+		height: 1
+		width: 1
+	}
+}
+
+layer {
+	name: "Flattener0"
+	type: "Flatten"
+	bottom: "SelectorRaw"
+	top: "Selector"
+}
+
+layer {
+	name: "SEL"
+	type: "Eltwise"
+	bottom: "output"
+	bottom: "Selector"
+	top: "FilteredData"
+	eltwise_param {
+		operation: PROD
+	}
+}
+
+layer {
+	name: "Expected"
+	type: "MemoryData"
+	top: "ExpectedRaw"
+	top: "dummy3"
+	memory_data_param {
+		batch_size: 32
+		channels: 18
+		height: 1
+		width: 1
+	}
+}
+
+layer {
+	name: "Flattener1"
+	type: "Flatten"
+	bottom: "ExpectedRaw"
+	top: "Expected"
+}	
+
+layer {
+	name: "loss"
+	type: "EuclideanLoss"
+	bottom: "Expected"
+	bottom: "FilteredData"
+}

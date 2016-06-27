@@ -1,0 +1,39 @@
+message TrainerConfig {
+	// Literally.
+	required string rom_name = 19;
+	// Literally.
+	required int32 replay_memory_capacity = 1;
+	// Literally.
+	required int32 total_iterations = 2;
+	// Deprecated.
+	required int32 minibatch_size = 3;
+	// Number of actions over which eps is linearlly annealed from 1.0 to 0.1.
+	required int32 eps_linear_range = 4;
+	// Reward decay factor in Q function.
+	required float gamma = 5;
+	// Actions between consecutive Q-learning updates.
+	required int32 update_freq = 6;
+	// Actions between consecutive network parameter copies.
+	required int32 NN_sync_freq = 7;
+	// Literally.
+	required int32 log_freq = 8;
+	// Literally.
+	required int32 eval_freq = 9;
+	// Literally.
+	required int32 eval_start_time = 10;
+	// Literally.
+	required int32 learn_start_time = 11;
+	// Literally.
+	required int32 snapshot_freq = 12;
+	// Frequency to display network parameters divided by `log_freq`.
+	required int32 dump_net_freq = 13;
+	// Frequency to display Q-value for each action when evaluating.
+	required int32 dump_action_freq = 14;
+	// Perform the same action `action_repeat` times.
+	optional int32 action_repeat = 15 [default = 6];
+	// Time for each (displayed) frame in ms.
+	optional int32 playback_display_rate = 16 [default = 100];
+	// Eps used in evaluation: 0.01 ~ 0.1.
+	optional float eval_eps = 17 [default = 0.05];
+	optional int32 eval_time = 18 [default = 1000];
+}

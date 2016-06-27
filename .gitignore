@@ -1,0 +1,12 @@
+bin/*
+bin1/*
+.*/
+
+*.txt
+.*.sw*
+*.pb.cc
+*.pb.h
+
+!bin/build.sh
+
+
